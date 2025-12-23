@@ -1,16 +1,16 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score
 import mlflow
 import mlflow.sklearn
 
 # 1. Load Dataset
-# Pastikan nama file sesuai
+# Pastikan nama file sesuai dengan yang ada di repo
 df = pd.read_csv('water_potability_preprocessing.csv')
 
 # 2. Pisahkan Fitur dan Target
-# PERBAIKAN DI SINI: Gunakan 'Potability' sebagai nama kolom yang didrop dan diambil
+# PERBAIKAN: Gunakan nama kolom asli 'Potability'
 X = df.drop(columns=['Potability'])
 y = df['Potability']
 
@@ -21,7 +21,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 mlflow.set_experiment("Eksperimen_Basic_Derryl")
 
 with mlflow.start_run():
-    # Aktifkan log_models=True
+    # Aktifkan log_models=True agar artefak model tersimpan otomatis
     mlflow.sklearn.autolog(log_models=True)
 
     # 4. Training Model
