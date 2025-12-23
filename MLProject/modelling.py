@@ -6,29 +6,33 @@ import mlflow
 import mlflow.sklearn
 
 # 1. Load Dataset
-# Pastikan nama file sesuai dengan yang ada di repo
+# Pastikan file ada di satu folder dengan script ini
 df = pd.read_csv('water_potability_preprocessing.csv')
 
 # 2. Pisahkan Fitur dan Target
-# PERBAIKAN: Gunakan nama kolom asli 'Potability'
+# Menggunakan kolom 'Potability' sesuai dataset kamu
 X = df.drop(columns=['Potability'])
 y = df['Potability']
 
 # Split Data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# 3. Set Eksperimen & Autolog
-mlflow.set_experiment("Eksperimen_Basic_Derryl")
+# --- PERBAIKAN UTAMA ADA DI BAWAH INI ---
 
+# JANGAN gunakan set_experiment saat dijalankan via 'mlflow run' di CI/CD
+# karena akan bentrok dengan Run ID yang dibuat otomatis.
+# mlflow.set_experiment("Eksperimen_Basic_Derryl")  <-- INI DIHAPUS/KOMENTAR
+
+# Aktifkan autolog
+mlflow.sklearn.autolog(log_models=True)
+
+# Mulai Run (akan otomatis menggunakan Run ID dari GitHub Actions)
 with mlflow.start_run():
-    # Aktifkan log_models=True agar artefak model tersimpan otomatis
-    mlflow.sklearn.autolog(log_models=True)
-
-    # 4. Training Model
+    # 3. Training Model
     rf = RandomForestClassifier(n_estimators=100, random_state=42)
     rf.fit(X_train, y_train)
 
-    # 5. Evaluasi
+    # 4. Evaluasi
     y_pred = rf.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     print(f"Accuracy: {acc}")
