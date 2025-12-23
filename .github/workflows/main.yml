@@ -30,4 +30,4 @@ jobs:
     # 4. Jalankan script training
     # Pastikan file CSV ada di repository kamu!
     - name: Run Model Training
-      run: python modelling_ci.py
+      run: python modelling.py
