@@ -1,41 +1,33 @@
 import pandas as pd
-import mlflow
-import mlflow.sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
-import os
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import mlflow
+import mlflow.sklearn
 
-# Cek apakah file dataset ada
-if not os.path.exists("water_potability_preprocessing.csv"):
-    # Fallback jika file ada di folder root tapi script dijalankan dari folder lain, atau sebaliknya
-    # Namun untuk CI sederhana, biasanya file ada di root.
-    print("Warning: File water_potability_preprocessing.csv tidak ditemukan di path saat ini.")
+# 1. Load Dataset
+# Pastikan nama file sesuai dengan yang ada di folder MLProject
+df = pd.read_csv('data_clean.csv') 
 
-try:
-    df = pd.read_csv("water_potability_preprocessing.csv")
-    
-    # Preprocessing sederhana
-    X = df.drop("Potability", axis=1)
-    y = df["Potability"]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Pisahkan fitur dan target (Sesuaikan 'Target' dengan nama kolom label kamu)
+X = df.drop(columns=['Target']) 
+y = df['Target']
 
-    # Setup MLflow
-    mlflow.set_experiment("CI_Eksperimen_Air")
-    mlflow.sklearn.autolog()
+# Split Data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Training
-    print("Mulai Training...")
-    with mlflow.start_run():
-        model = RandomForestClassifier(n_estimators=100, random_state=42)
-        model.fit(X_train, y_train)
+# 2. Set Eksperimen & Autolog
+mlflow.set_experiment("Eksperimen_Basic_Derryl")
 
-        # Evaluasi
-        predictions = model.predict(X_test)
-        acc = accuracy_score(y_test, predictions)
-        print(f"Model trained with Accuracy: {acc}")
+with mlflow.start_run():
+    # PENTING: Aktifkan log_models=True sesuai request reviewer
+    mlflow.sklearn.autolog(log_models=True)
 
-except Exception as e:
-    print(f"Terjadi Error: {e}")
-    # Raise error agar CI statusnya menjadi Failure jika ada masalah
-    raise e
+    # 3. Training Model
+    rf = RandomForestClassifier(n_estimators=100, random_state=42)
+    rf.fit(X_train, y_train)
+
+    # 4. Evaluasi (Metrics akan otomatis ter-log oleh autolog, tapi print juga oke)
+    y_pred = rf.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
+    print(f"Accuracy: {acc}")
