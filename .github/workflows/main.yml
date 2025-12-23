@@ -1,0 +1,27 @@
+name: CI Workflow MLflow
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install Dependencies
+      run: |
+        # Install library yang dibutuhkan di environment runner
+        pip install mlflow==2.18.0 scikit-learn pandas numpy
+
+    - name: Run MLflow Project
+      run: |
+        # PERBAIKAN:
+        # 1. Mengarah ke folder ./MLProject
+        # 2. Menggunakan --env-manager=local (pengganti --no-conda di versi baru)
+        mlflow run ./MLProject --env-manager=local
