@@ -16,10 +16,12 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        pip install mlflow==2.18.0 virtualenv
+        # Install library yang dibutuhkan di environment runner
+        pip install mlflow==2.18.0 scikit-learn pandas numpy
 
     - name: Run MLflow Project
-      # Ini perintah wajib untuk poin Basic/Skilled
-      # Menjalankan project yang ada di dalam folder MLProject
       run: |
-        mlflow run ./MLProject --no-conda
+        # PERBAIKAN:
+        # 1. Mengarah ke folder ./MLProject
+        # 2. Menggunakan --env-manager=local (pengganti --no-conda di versi baru)
+        mlflow run ./MLProject --env-manager=local
