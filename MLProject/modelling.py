@@ -7,7 +7,7 @@ import mlflow.sklearn
 
 # 1. Load Dataset
 # Pastikan nama file sesuai dengan yang ada di folder MLProject
-df = pd.read_csv('data_clean.csv') 
+df = pd.read_csv('water_potability_preprocessing') 
 
 # Pisahkan fitur dan target (Sesuaikan 'Target' dengan nama kolom label kamu)
 X = df.drop(columns=['Target']) 
