@@ -1,4 +1,4 @@
-name: Project_Klasifikasi_Derryl
+name: Project_Klasifikasi
 
 conda_env: conda.yaml
 
